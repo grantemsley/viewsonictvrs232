@@ -118,6 +118,13 @@ def setMute(value):
   else:
     return "Specify On or Off"
 
+def setDefaults(ignored):
+  setBrightness(50)
+  setContrast(50)
+  setColor(50)
+  setTint(50)
+  return setSharpness(50)
+
 # Get commands
 
 def getInput():

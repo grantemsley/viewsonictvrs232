@@ -4,33 +4,65 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="../static/bootstrap.min.css" />
-    <link rel="stylesheet" href="../static/style.css" />
     <title>TV Control</title>
   </head>
-
-
 <body>
   <div class="container">
-      <button id="power" class="btn">Power</button>
+    <div class="row border-bottom border-primary py-2">
+      <div class="col-2"><h4>Power</h4></div>
+      <div class="col-2"><button id="power" class="btn">Power</button></div>
   </div>
-  <div class="container">
-      <button id="hdmi1" class="btn">Raspberry Pi (HDMI1)</button>
-      <button id="hdmi2" class="btn">Chromecast (HDMI2)</button>
-      <button id="hdmi3" class="btn">PC (HDMI3)</button>
-      <button id="vga" class="btn">VGA</button>
-      <button id="av" class="btn">AV</button>
-      <button id="tv" class="btn">TV</button>
+  <div class="row border-bottom border-primary py-2">
+    <div class="col-md-2"><h4>Input</h4></div>
+    <div class="col-md"><button id="hdmi1" class="btn btn-block">Raspberry Pi (HDMI1)</button></div>
+    <div class="col-md"><button id="hdmi2" class="btn btn-block">Chromecast (HDMI2)</button></div>
+    <div class="col-md"><button id="hdmi3" class="btn btn-block">PC (HDMI3)</button></div>
+    <div class="col-md"><button id="vga" class="btn btn-block">VGA</button></div>
+    <div class="col-md"><button id="av" class="btn btn-block">AV</button></div>
+    <div class="col-md"><button id="tv" class="btn btn-block">TV</button></div>
   </div>
-
-  <label for="brightness">Brightness:</label>
-  <input name="brightness" id="brightness" type="range" class="form-control-range" oninput="document.querySelector('#brightnessoutput').value=this.value"/>
-  <output for="brightness" id="brightnessoutput"></output>
+  <div class="row border-bottom border-primary py-2">
+    <div class="col-md-2"><h4>Volume</h4></div>
+    <div class="col-md"><input name="volume" id="volume" type="range" class="form-control-range" oninput="document.querySelector('#volumeoutput').value=this.value"/></div>
+    <div class="col-md-1"><output for="volume" id="volumeoutput"></output></div>
+    <div class="col-md-2"><label class="" for="mute"><input type="checkbox" class="" id="mute">Mute</label></div>
+  </div>
+  <div class="row pt-4 mt-4">
+    <div class="col-md-4"><h2>Picture Control</h2></div>
+    <div class="col"><button id="defaults" class="btn btn-block btn-warning">Restore Defaults</button></div>
+  </div>
+  <div class="row border-bottom border-primary py-2">
+    <div class="col-md-2"><h4>Brightness</h4></div>
+    <div class="col-md"><input name="brightness" id="brightness" type="range" class="form-control-range" oninput="document.querySelector('#brightnessoutput').value=this.value"/></div>
+    <div class="col-md-1"><output for="brightness" id="brightnessoutput"></output></div>
+  </div>
+  <div class="row border-bottom border-primary py-2">
+    <div class="col-md-2"><h4>Contrast</h4></div>
+    <div class="col-md"><input name="contrast" id="contrast" type="range" class="form-control-range" oninput="document.querySelector('#contrastoutput').value=this.value"/></div>
+    <div class="col-md-1"><output for="contrast" id="contrastoutput"></output></div>
+  </div>
+  <div class="row border-bottom border-primary py-2">
+    <div class="col-md-2"><h4>Sharpness</h4></div>
+    <div class="col-md"><input name="sharpness" id="sharpness" type="range" class="form-control-range" oninput="document.querySelector('#sharpnessoutput').value=this.value"/></div>
+    <div class="col-md-1"><output for="sharpness" id="sharpnessoutput"></output></div>
+  </div>
+  <div class="row border-bottom border-primary py-2">
+    <div class="col-md-2"><h4>Color</h4></div>
+    <div class="col-md"><input name="color" id="color" type="range" class="form-control-range" oninput="document.querySelector('#coloroutput').value=this.value"/></div>
+    <div class="col-md-1"><output for="color" id="coloroutput"></output></div>
+  </div>
+  <div class="row border-bottom border-primary py-2">
+    <div class="col-md-2"><h4>Tint</h4></div>
+    <div class="col-md"><input name="tint" id="tint" type="range" class="form-control-range" oninput="document.querySelector('#tintoutput').value=this.value"/></div>
+    <div class="col-md-1"><output for="tint" id="tintoutput"></output></div>
+  </div>
 
 <script src="../static/popper.min.js"></script>
 <script src="../static/jquery-3.3.1.min.js"></script>
 <script src="../static/bootstrap.min.js"></script>
 <script>
 $(document).ready(function() {
+  // Handle inputs
   $("#hdmi1").click(function(e) { e.preventDefault(); $.ajax({ url: "/set/input/hdmi1", success: function(result) { loadSettings(); } }); });
   $("#hdmi2").click(function(e) { e.preventDefault(); $.ajax({ url: "/set/input/hdmi2", success: function(result) { loadSettings(); } }); });
   $("#hdmi3").click(function(e) { e.preventDefault(); $.ajax({ url: "/set/input/hdmi3", success: function(result) { loadSettings(); } }); });
@@ -38,8 +70,19 @@ $(document).ready(function() {
   $("#av").click(function(e) { e.preventDefault(); $.ajax({ url: "/set/input/av", success: function(result) { loadSettings(); } }); });
   $("#tv").click(function(e) { e.preventDefault(); $.ajax({ url: "/set/input/tv", success: function(result) { loadSettings(); } }); });
   $("#power").click(function(e) { e.preventDefault(); $.ajax({ url: "/set/power/toggle", success: function(result) { loadSettings(); } }); });
+  $("#defaults").click(function(e) { e.preventDefault(); $.ajax({ url: "/set/defaults/ignored", success: function(result) { loadSettings(); } }); });
 
+  $("#volume").change(function() { $.ajax({ url: "/set/volume/"+$("#volume").val(), success: function(result) { loadSettings(); } }); });
   $("#brightness").change(function() { $.ajax({ url: "/set/brightness/"+$("#brightness").val(), success: function(result) { loadSettings(); } }); });
+  $("#contrast").change(function() { $.ajax({ url: "/set/contrast/"+$("#contrast").val(), success: function(result) { loadSettings(); } }); });
+  $("#sharpness").change(function() { $.ajax({ url: "/set/sharpness/"+$("#sharpness").val(), success: function(result) { loadSettings(); } }); });
+  $("#color").change(function() { $.ajax({ url: "/set/color/"+$("#color").val(), success: function(result) { loadSettings(); } }); });
+  $("#tint").change(function() { $.ajax({ url: "/set/tint/"+$("#tint").val(), success: function(result) { loadSettings(); } }); });
+
+  $("#mute").change(function() { 
+    if($("#mute").prop('checked')) { var mutevalue = "On"; } else { var mutevalue = "Off"; }
+    $.ajax({ url: "/set/mute/"+mutevalue, success: function(result) { loadSettings(); } }); 
+  });
 
 
   function setActive(e) {
@@ -69,8 +112,21 @@ $(document).ready(function() {
       if(data.Input == "TV") { setActive($("#tv")) } else { setInactive($("#tv")) }
 
       // Slider values
+      $("#volume").val(data.Volume);
+      $("#volumeoutput").val(parseInt(data.Volume));
       $("#brightness").val(data.Brightness);
       $("#brightnessoutput").val(parseInt(data.Brightness));
+      $("#contrast").val(data.Contrast);
+      $("#contrastoutput").val(parseInt(data.Contrast));
+      $("#sharpness").val(data.Sharpness);
+      $("#sharpnessoutput").val(parseInt(data.Sharpness));
+      $("#color").val(data.Color);
+      $("#coloroutput").val(parseInt(data.Color));
+      $("#tint").val(data.Tint);
+      $("#tintoutput").val(parseInt(data.Tint));
+
+      // Mute
+      if(data.Mute == "On") { $("#mute").prop('checked', true); } else { $("#mute").prop('checked', false); }
 
 
     }});
