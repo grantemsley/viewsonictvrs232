@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="../static/bootstrap.min.css" />
+    <link rel="stylesheet" href="../static/style.css" />
+    <title>TV Control</title>
+  </head>
+
+
+<body>
+  <div class="container">
+      <button id="power" class="btn">Power</button>
+  </div>
+  <div class="container">
+      <button id="hdmi1" class="btn">Raspberry Pi (HDMI1)</button>
+      <button id="hdmi2" class="btn">Chromecast (HDMI2)</button>
+      <button id="hdmi3" class="btn">PC (HDMI3)</button>
+      <button id="vga" class="btn">VGA</button>
+      <button id="av" class="btn">AV</button>
+      <button id="tv" class="btn">TV</button>
+  </div>
+
+  <label for="brightness">Brightness:</label>
+  <input name="brightness" id="brightness" type="range" class="form-control-range" oninput="document.querySelector('#brightnessoutput').value=this.value"/>
+  <output for="brightness" id="brightnessoutput"></output>
+
+<script src="../static/popper.min.js"></script>
+<script src="../static/jquery-3.3.1.min.js"></script>
+<script src="../static/bootstrap.min.js"></script>
+<script>
+$(document).ready(function() {
+  $("#hdmi1").click(function(e) { e.preventDefault(); $.ajax({ url: "/set/input/hdmi1", success: function(result) { loadSettings(); } }); });
+  $("#hdmi2").click(function(e) { e.preventDefault(); $.ajax({ url: "/set/input/hdmi2", success: function(result) { loadSettings(); } }); });
+  $("#hdmi3").click(function(e) { e.preventDefault(); $.ajax({ url: "/set/input/hdmi3", success: function(result) { loadSettings(); } }); });
+  $("#vga").click(function(e) { e.preventDefault(); $.ajax({ url: "/set/input/vga", success: function(result) { loadSettings(); } }); });
+  $("#av").click(function(e) { e.preventDefault(); $.ajax({ url: "/set/input/av", success: function(result) { loadSettings(); } }); });
+  $("#tv").click(function(e) { e.preventDefault(); $.ajax({ url: "/set/input/tv", success: function(result) { loadSettings(); } }); });
+  $("#power").click(function(e) { e.preventDefault(); $.ajax({ url: "/set/power/toggle", success: function(result) { loadSettings(); } }); });
+
+  $("#brightness").change(function() { $.ajax({ url: "/set/brightness/"+$("#brightness").val(), success: function(result) { loadSettings(); } }); });
+
+
+  function setActive(e) {
+    e.removeClass("btn-secondary");
+    e.addClass("btn-primary");
+  }
+  function setInactive(e) {
+    e.removeClass("btn-primary");
+    e.addClass("btn-secondary");
+  }
+
+  function loadSettings() {
+    $.ajax({url: "/get/Settings", success: function(result) {
+      var data = $.parseJSON(result);
+
+      // Set color of power button
+      $("#power").removeClass("btn-success");
+      $("#power").removeClass("btn-danger");
+      if(data.Power == "On") { $("#power").addClass("btn-success") } else { $("#power").addClass("btn-danger") }
+
+      // Set color for inputs
+      if(data.Input == "HDMI1") { setActive($("#hdmi1")) } else { setInactive($("#hdmi1")) }
+      if(data.Input == "HDMI2") { setActive($("#hdmi2")) } else { setInactive($("#hdmi2")) }
+      if(data.Input == "HDMI3") { setActive($("#hdmi3")) } else { setInactive($("#hdmi3")) }
+      if(data.Input == "VGA") { setActive($("#vga")) } else { setInactive($("#vga")) }
+      if(data.Input == "AV") { setActive($("#av")) } else { setInactive($("#av")) }
+      if(data.Input == "TV") { setActive($("#tv")) } else { setInactive($("#tv")) }
+
+      // Slider values
+      $("#brightness").val(data.Brightness);
+      $("#brightnessoutput").val(parseInt(data.Brightness));
+
+
+    }});
+  }
+
+  loadSettings();
+
+
+
+
+});
+
+
+</script>
+
+</body>
+</html>
