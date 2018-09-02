@@ -101,7 +101,15 @@ $(document).ready(function() {
       // Set color of power button
       $("#power").removeClass("btn-success");
       $("#power").removeClass("btn-danger");
-      if(data.Power == "On") { $("#power").addClass("btn-success") } else { $("#power").addClass("btn-danger") }
+      if(data.Power == "On") { 
+        $("#power").addClass("btn-success") 
+        // Activate sliders
+        $('input[type="range"]').prop('disabled', false);
+      } else { 
+        $("#power").addClass("btn-danger") 
+        // Deactivate sliders
+        $('input[type="range"]').prop('disabled', true);
+      }
 
       // Set color for inputs
       if(data.Input == "HDMI1") { setActive($("#hdmi1")) } else { setInactive($("#hdmi1")) }
@@ -124,6 +132,8 @@ $(document).ready(function() {
       $("#coloroutput").val(parseInt(data.Color));
       $("#tint").val(data.Tint);
       $("#tintoutput").val(parseInt(data.Tint));
+
+      
 
       // Mute
       if(data.Mute == "On") { $("#mute").prop('checked', true); } else { $("#mute").prop('checked', false); }
