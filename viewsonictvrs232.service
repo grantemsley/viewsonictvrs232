@@ -1,0 +1,13 @@
+[Unit]
+Description=TV Control
+After=syslog.target
+
+[Service]
+User=tv
+Group=tv
+ExecStart=/usr/bin/python /home/tv/viewsonictvrs232/app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
